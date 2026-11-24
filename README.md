@@ -17,9 +17,15 @@
 ```
 apk/           TiviMate 2.1.5 + TVBox4.1+ 0.0.7 (manifest.tsv / checksums.sha256)
 playlist/
-  gen_live.py  拉 hypnotix -> 合并去重 -> 应用分组/排列规则 -> m3u
-  merge_rules.py  仓库分组/排列规则(从 iptv-tivimate 提取, 自包含):
-                  央视数字序 -> 电影/新闻/体育/港澳台/海外...分组 -> 组内字母序
+  merge_playlists.py  原仓库完整规则管线: 提取(jsDelivr+iptv-org+fnos)
+                      +按URL/频道名去重+探活+死链过滤+黑名单+重分类+排序+校验
+  filter_playlist.py  探活/过滤引擎(probe/reachable/缓存/黑名单)
+  verify_playlist.py  ParserException 校验剔除
+  check_live.py check_loop.py check_content.py remove_loop.py
+                      录播/循环频道检测与剔除(媒体序号+分片滚动+内容哈希)
+  merge_rules.py      分组/排列规则(央视数字序 -> 分组顺序 -> 组内字母序)
+  box-dead.env        死源/黑名单(IPTV_SKIP_HOSTS)
+  gen_live.py         快速合并 hypnotix 的简易入口(不带探活, 调试用)
 deploy/
   iptv-push-box.sh      推送 + 起盒内 httpd + 强制 TiviMate 重载
   install-httpd.sh      安装盒内 httpd(8099, /system 开机自启)
@@ -49,17 +55,23 @@ bash install.sh --vod --token <token>
 bash deploy/iptv-refresh.sh
 ```
 
-## 直播源规则（分组/排列）
+## 节目源规则（从原仓库 iptv-tivimate 同步）
 
-`playlist/merge_rules.py` 提取自 `iptv-tivimate/playlist/merge_playlists.py`：
+`iptv-refresh.sh` 依次执行（与 iptv-tivimate 一致的规则）：
 
-1. **重分类**（`classify_group`）：央视/CGTN -> 央视频道；凤凰/TVB/東森/中天/三立/民视... -> 港澳台频道；
-   电影 -> 电影频道；体育 -> 体育频道；新闻 -> 新闻频道；国际公共(freetv) -> 海外频道·地区；
-   中文字段保留；其余按关键字归中文分类。
-2. **排序**（`sort_final`）：CCTV-1..17 数字序最前，再按 `电影频道/少儿动漫/新闻频道/...` 分组顺序，
-   组内按英文名字母序。
-
-源优先级（`gen_live.py`，先出现者胜，按 URL 去重）：freetv > 新闻 > 港澳台/中文/体育/电影(iptv-org)。
+1. **提取**（`merge_playlists.py`）：基线(上次 merged.m3u，防上游抽风丢好源) 最高优先，
+   再按 `jsDelivr Collect-IPTV(best_sorted) > iptv-org(news/cn/hk/tw/zh/movies/sports/ent) > fnos(BBC/CNN)` 合并。
+   jsDelivr best_sorted 含「名侦探柯南」等动漫频道（hypnotix 无此源）。
+2. **去重**：先按 URL 去重，再按**归一化频道名**去重（`norm_name`，如 CCTV-13/CCTV13 视为同一），
+   高优先级源胜出。
+3. **去不可播放**：`filter_playlist.probe` 逐流探活（HLS 分段真实可播、非 HTML/YouTube、码率达标），
+   死链剔除；`box-dead.env` 死源黑名单(`IPTV_SKIP_HOSTS`)跳过；`verify_playlist` 剔除 ExoPlayer
+   解析失败条目。
+4. **录播/循环剔除**：`check_live`(媒体序号推进) -> `check_loop`(分片列表滚动) ->
+   `check_content`(内容哈希确认) -> `remove_loop`，剔除录播/循环频道。
+5. **分组/排列**（`merge_rules`）：央视/CGTN -> 央视频道；凤凰/TVB/東森/中天/三立/民视 -> 港澳台频道；
+   电影 -> 电影频道；体育 -> 体育频道；新闻 -> 新闻频道；国际公共 -> 海外频道·地区；其余按关键字归中文分类。
+   排序：CCTV-1..17 数字序最前，再按 `电影频道/少儿动漫/新闻频道/...` 分组顺序，组内按英文名字母序。
 
 ## TiviMate 重载要点
 
