@@ -1,8 +1,12 @@
 playlist/merged.m3u
+playlist/merged.relaxed.m3u
+playlist/merged.relaxed.clean.m3u
+playlist/best_sorted.m3u
 playlist/*.tsv
 playlist/report.txt
 playlist/verify-report.txt
-playlist/merge.log
+playlist/merge*.log
+playlist/loop*.log
 playlist/probe-cache.json
 update.log
 *.tmp
