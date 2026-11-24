@@ -42,7 +42,7 @@ TS=$(date +%s)
 # 3a. 首选: 缓存破坏参数(URL 变化 -> TiviMate 重新拉取)
 "$ADB" -s "$BOX" shell "sqlite3 $DB \"UPDATE playlists SET url='http://127.0.0.1:$PORT/iptv.m3u?ts=$TS' WHERE id=1;\"" 2>/dev/null || true
 # 3b. 兜底: 若 sqlite 未生效, 删除列表缓存让 TiviMate 重新导入
-CUR=$("$ADB" -s "$BOX" shell "sqlite3 $DB 'SELECT url FROM playlists WHERE id=1;'" 2>/dev/null | tr -d '\r')
+CUR=$("$ADB" -s "$BOX" shell "sqlite3 $DB 'SELECT url FROM playlists WHERE id=1;'" 2>/dev/null | tr -d '\r' || true)
 if [[ "$CUR" != *"ts=$TS"* ]]; then
   echo "[push] sqlite bump failed, clearing cached channels"
   "$ADB" -s "$BOX" shell "sqlite3 $DB 'DELETE FROM channels;'" 2>/dev/null || true
