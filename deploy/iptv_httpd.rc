@@ -1,0 +1,9 @@
+# Serve the pushed IPTV playlist from the box itself (TiviMate uses
+# http://127.0.0.1:8099/iptv.m3u so there is no LAN/IP dependency).
+on boot
+    start iptv_httpd
+
+service iptv_httpd /system/bin/toybox nc -p 8099 -L /system/bin/iptv_serve_one.sh
+    class main
+    user root
+    group root

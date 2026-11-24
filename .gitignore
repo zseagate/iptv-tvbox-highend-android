@@ -1,0 +1,4 @@
+playlist/merged.m3u
+update.log
+*.tmp
+__pycache__/

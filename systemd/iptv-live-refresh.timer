@@ -1,0 +1,10 @@
+[Unit]
+Description=Every 4h refresh IPTV live source for high-end STB
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=4h
+Unit=iptv-live-refresh.service
+
+[Install]
+WantedBy=timers.target
