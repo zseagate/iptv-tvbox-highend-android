@@ -1,11 +1,10 @@
 #!/system/bin/sh
-# One-shot HTTP responder for /sdcard/iptv.m3u.
-# toybox `nc -p 8099 -L <this>` runs it once per connection with
-# stdin/stdout wired to the client socket (xinetd-style).
+# 盒内单次 HTTP 应答器: 把 /sdcard/iptv.m3u 用 HTTP 吐给 TiviMate。
+# toybox `nc -p 8099 -L <this>` 每来一个连接执行一次(xinetd 风格),
+# stdin/stdout 直接接到客户端 socket。
 #
-# NOTE: keep the trailing `sleep 1` before exit -- without it toybox nc
-# closes the socket before the kernel flushes the body over a real LAN
-# link, so clients receive a truncated playlist (~46KB).
+# 注意: 结尾的 `sleep 1` 必须保留 —— 否则 toybox nc 会在内核把响应体
+# 真正刷过局域网之前就关闭 socket, 客户端会收到截断的列表(~46KB)。
 F=/sdcard/iptv.m3u
 
 # consume the request line, then answer immediately; never block on

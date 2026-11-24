@@ -1,5 +1,5 @@
-# Serve the pushed IPTV playlist from the box itself (TiviMate uses
-# http://127.0.0.1:8099/iptv.m3u so there is no LAN/IP dependency).
+# 盒内 HTTP 服务: 把推送的直播源从盒子自身吐给 TiviMate。
+# TiviMate 用 http://127.0.0.1:8099/iptv.m3u, 不依赖主机 IP。
 on boot
     start iptv_httpd
 

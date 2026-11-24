@@ -1,5 +1,5 @@
 [Unit]
-Description=Regenerate + push IPTV live source to high-end STB (TiviMate)
+Description=重新生成并推送直播源到高配盒子 (TiviMate 盒内本地列表)
 After=network-online.target
 Wants=network-online.target
 

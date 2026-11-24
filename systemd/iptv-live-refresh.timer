@@ -1,5 +1,5 @@
 [Unit]
-Description=Every 4h refresh IPTV live source for high-end STB
+Description=每 4 小时刷新高配盒子直播源
 
 [Timer]
 OnBootSec=5min

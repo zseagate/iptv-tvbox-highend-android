@@ -29,7 +29,7 @@ playlist/
 deploy/
   iptv-push-box.sh      推送 + 起盒内 httpd + 强制 TiviMate 重载
   install-httpd.sh      安装盒内 httpd(8099, /system 开机自启)
-  iptv-refresh.sh       定时刷新(gen -> push)
+  iptv-refresh.sh       定时刷新(完整管线: 提取+探活+剔除循环 -> push)
   tvbox-vod-setup.sh    装 TVBox4.1+ + 添加/切换 MacCMS 源
   iptv_serve_one.sh     盒内 HTTP 应答(8099, 单连接)
   iptv_httpd.rc         盒内 init 开机自启
