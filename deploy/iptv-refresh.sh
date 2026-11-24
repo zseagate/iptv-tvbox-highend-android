@@ -21,6 +21,17 @@ export IPTV_CACHE="${IPTV_CACHE:-$PL/probe-cache.json}"
 export IPTV_UA="${IPTV_UA:-ExoPlayerLib/2.19.1}"
 export IPTV_REFERER="${IPTV_REFERER:-auto}"
 export PYTHONUNBUFFERED=1
+# 放宽档(默认, 详见 README 探活可放宽点): 吞吐/时限门槛放宽, 救回慢台
+# 覆盖可收紧: IPTV_MIN_SPEED_BPS=32768 IPTV_READ_DEADLINE=8 ... 即为严格档
+export IPTV_READ_DEADLINE="${IPTV_READ_DEADLINE:-15}"
+export IPTV_MIN_SPEED_BPS="${IPTV_MIN_SPEED_BPS:-8192}"
+export IPTV_MIN_CHUNK_BYTES="${IPTV_MIN_CHUNK_BYTES:-262144}"
+export IPTV_MIN_TINY_BYTES="${IPTV_MIN_TINY_BYTES:-16384}"
+export IPTV_MIN_ALIVE_BYTES="${IPTV_MIN_ALIVE_BYTES:-65536}"
+export IPTV_PROBE_DEPTH="${IPTV_PROBE_DEPTH:-4}"
+export IPTV_TIMEOUT="${IPTV_TIMEOUT:-8,15}"
+export IPTV_SEG_TIMEOUT="${IPTV_SEG_TIMEOUT:-8,12}"
+export IPTV_REACH_TIMEOUT="${IPTV_REACH_TIMEOUT:-8,12}"
 
 # 黑名单(死源) + 频道名黑名单
 if [[ -f "$PL/box-dead.env" ]]; then . "$PL/box-dead.env"; fi
